@@ -7,7 +7,7 @@ INCLUDES = -Iinclude -Ilibft
 LIBFT = libft/libft.a
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror $(INCLUDES)
 
 all: $(LIBFT) $(NAME)
 
@@ -24,5 +24,5 @@ clean:
 fclean: clean
 	$(MAKE) -C libft fclean
 	rm -f $(NAME)
-
+	
 re: fclean all
