@@ -9,8 +9,3 @@ so_long
 
 # Ignorar archivos .txt
 *.txt
-
-# Si utilizas un sistema de compilación que genera archivos temporales (ej. VSCode, vim, etc.)
-.vscode/
-*.swp
-*.swo
