@@ -1,0 +1,16 @@
+# Ignorar archivos compilados
+*.o
+*.a
+*.out
+*.exe
+
+# Ignorar el ejecutable generado por make
+so_long
+
+# Ignorar archivos .txt
+*.txt
+
+# Si utilizas un sistema de compilación que genera archivos temporales (ej. VSCode, vim, etc.)
+.vscode/
+*.swp
+*.swo
