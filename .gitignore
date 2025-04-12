@@ -7,5 +7,6 @@
 # Ignorar el ejecutable generado por make
 so_long
 
-# Ignorar archivos .txt
+# Ignorar archivos de texto
 *.txt
+*.odt
