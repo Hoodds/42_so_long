@@ -78,3 +78,41 @@ int	load_map(t_game *game, const char *filename)
 
 	return (0);
 }
+
+int	is_valid_map(t_game *game)
+{
+    int	player = 0, exit = 0, collect = 0;
+    int	i, j;
+
+    // Comprobar rectangulo
+    for (i = 0; i < game->height; i++)
+        if ((int)ft_strlen(game->map[i]) != game->width)
+            return (0);
+
+    // Comprobar paredes arriba y abajo
+    for (j = 0; j < game->width; j++)
+        if (game->map[0][j] != '1' || game->map[game->height - 1][j] != '1')
+            return (0);
+
+    // Comprobar laterales y caracteres validos
+    for (i = 0; i < game->height; i++)
+    {
+        if (game->map[i][0] != '1' || game->map[i][game->width - 1] != '1')
+            return (0);
+        for (j = 0; j < game->width; j++)
+        {
+            if (game->map[i][j] == 'P')
+                player++;
+            else if (game->map[i][j] == 'E')
+                exit++;
+            else if (game->map[i][j] == 'C')
+                collect++;
+            else if (game->map[i][j] != '0' && game->map[i][j] != '1')
+                return (0);
+        }
+    }
+    // Comprobar cantidad de elementos obligatorios
+    if (player != 1 || exit < 1 || collect < 1)
+        return (0);
+    return (1);
+}

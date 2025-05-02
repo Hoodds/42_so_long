@@ -13,6 +13,16 @@ int	main(void)
 		return (1);
 	}
 
+    if (!is_valid_map(&game))
+    {
+        printf("Mapa inválido\n");
+        // liberar memoria antes de salir
+        for (int j = 0; j < game.height; j++)
+            free(game.map[j]);
+        free(game.map);
+        return (1);
+    }
+
 	printf("Mapa cargado ok. Tamaño: %dx%d\n", game.width, game.height);
 
 	// imprimir el mapa
