@@ -1,44 +1,46 @@
 #include "so_long.h"
 #include <stdio.h>
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	t_game	game;
-	int		i;
+    t_game	game;
+    int		i;
 
-	// cargar el mapa desde el archivo .ber. hay que hacer marpeta maps
-	if (load_map(&game, "./mapa.ber") != 0)
-	{
-		printf("Error al cargar el mapa\n");
-		return (1);
-	}
+    if (argc != 2)
+    {
+        printf("Uso: %s <mapa.ber>\n", argv[0]);
+        return (1);
+    }
+
+    if (load_map(&game, argv[1]) != 0)
+    {
+        printf("Error al cargar el mapa\n");
+        return (1);
+    }
 
     if (!is_valid_map(&game))
     {
         printf("Mapa inválido\n");
-        // liberar memoria antes de salir
         for (int j = 0; j < game.height; j++)
             free(game.map[j]);
         free(game.map);
         return (1);
     }
 
-	printf("Mapa cargado ok. Tamaño: %dx%d\n", game.width, game.height);
+    printf("Mapa cargado ok. Tamaño: %dx%d\n", game.width, game.height);
 
-	// imprimir el mapa
-	i = 0;
-	while (game.map[i])
-	{
-		printf("%s\n", game.map[i]);
-		i++;
-	}
+    i = 0;
+    while (game.map[i])
+    {
+        printf("%s\n", game.map[i]);
+        i++;
+    }
 
-	// liberar la memoria
-	for (int j = 0; j < game.height; j++)
-	{
-		free(game.map[j]);
-	}
-	free(game.map);
+    for (int j = 0; j < game.height; j++)
+    {
+        free(game.map[j]);
+    }
+    free(game.map);
 
-	return (0);
+    return (0);
 }

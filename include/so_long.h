@@ -15,6 +15,7 @@ typedef struct s_game
 }	t_game;
 
 char	*read_file(const char *filename);
-int		load_map(t_game *game, const char *filename);
+int	load_map(t_game *game, const char *filename);
+int	is_valid_map(t_game *game);
 
 #endif
