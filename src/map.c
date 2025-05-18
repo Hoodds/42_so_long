@@ -64,7 +64,7 @@ int	load_map(t_game *game, const char *filename)
     // ya no se necesita el string completo, se libera
 	free(content);
 
-	// si falló el split (memoria), error
+	// si falla el split (memoria), error
 	if (!game->map)
 		return (1);
 

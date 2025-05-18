@@ -15,6 +15,9 @@ typedef struct s_game
 	int		height;
 	mlx_t	*mlx;		// puntero a la ventana
 	mlx_image_t *img;	// puntero a la imagen
+	int		player_x;   // pos X del jugador
+	int		player_y;   // pos Y del jugador
+	int		moves;      // contador de movimientos
 }	t_game;
 
 char	*read_file(const char *filename);

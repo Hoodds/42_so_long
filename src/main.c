@@ -3,7 +3,7 @@
 #include "MLX42/MLX42.h"
 #include <stdint.h> // para uint32_t
 
-// Tamaño de cada tile en píxeles
+// Tamanyo de cada tile en pix
 #define TILE_SIZE 64
 
 void	draw_map(t_game *game)
@@ -35,6 +35,104 @@ void	draw_map(t_game *game)
     }
     mlx_image_to_window(game->mlx, img, 0, 0);
     game->img = img;
+}
+
+// Encuentra las coordenadas iniciales del jugador
+void	find_player(t_game *game)
+{
+    int i, j;
+
+    for (i = 0; i < game->height; i++)
+    {
+        for (j = 0; j < game->width; j++)
+        {
+            if (game->map[i][j] == 'P')
+            {
+                game->player_x = j;
+                game->player_y = i;
+                return;
+            }
+        }
+    }
+}
+
+// Comprueba si el movimiento es valido
+int	is_valid_move(t_game *game, int new_y, int new_x)
+{
+    // Si es una pared, no podemos movernos
+    if (game->map[new_y][new_x] == '1')
+        return (0);
+    return (1);
+}
+
+// Mueve al jugador en la direccio especificada
+void	move_player(t_game *game, int dir_y, int dir_x)
+{
+    int new_y = game->player_y + dir_y;
+    int new_x = game->player_x + dir_x;
+
+    // Comprueba si el movimiento es valido
+    if (!is_valid_move(game, new_y, new_x))
+        return;
+
+    // Si el destino es un coleccionable, recogerlo
+    if (game->map[new_y][new_x] == 'C')
+        game->map[new_y][new_x] = '0';
+
+    // Si el destino es la salida, comprobar si hemos recogido todos los coleccionables
+    if (game->map[new_y][new_x] == 'E')
+    {
+        // Comprobar si hay ma coleccionables
+        for (int i = 0; i < game->height; i++)
+            for (int j = 0; j < game->width; j++)
+                if (game->map[i][j] == 'C')
+                    return; // Hay coleccionables, no podemos salir aun
+
+        printf("¡Has ganado! Movimientos: %d\n", game->moves + 1);
+        mlx_close_window(game->mlx);
+        return;
+    }
+
+    // Actualizar el mapa: borrar la posicion antigua
+    game->map[game->player_y][game->player_x] = '0';
+
+    // Actualizar la posicion del jugador
+    game->player_x = new_x;
+    game->player_y = new_y;
+
+    // Poner al jugador en la nueva posicion
+    game->map[game->player_y][game->player_x] = 'P';
+
+    // Incrementar contador de movimientos
+    game->moves++;
+    printf("Movimientos: %d\n", game->moves);
+
+    // Volver a dibujar el mapa
+    mlx_delete_image(game->mlx, game->img);
+    draw_map(game);
+}
+
+// Callback de teclado
+void	key_handler(mlx_key_data_t keydata, void *param)
+{
+    t_game	*game;
+
+    game = param;
+    // Solo procesar teclas cuando se presionan
+    if (keydata.action != MLX_PRESS && keydata.action != MLX_REPEAT)
+        return;
+
+    // Mover segun la tecla
+    if (keydata.key == MLX_KEY_W || keydata.key == MLX_KEY_UP)
+        move_player(game, -1, 0); // Arriba
+    else if (keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_DOWN)
+        move_player(game, 1, 0);  // Abajo
+    else if (keydata.key == MLX_KEY_A || keydata.key == MLX_KEY_LEFT)
+        move_player(game, 0, -1); // Izquierda
+    else if (keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_RIGHT)
+        move_player(game, 0, 1);  // Derecha
+    else if (keydata.key == MLX_KEY_ESCAPE)
+        mlx_close_window(game->mlx); // Salir con ESC
 }
 
 int	main(int argc, char **argv)
@@ -73,6 +171,12 @@ int	main(int argc, char **argv)
         return (1);
     }
 
+    // Inicializar contador de movimientos
+    game.moves = 0;
+
+    // Encontrar posicion inicial del jugador
+    find_player(&game);
+
     printf("Mapa cargado ok. Tamaño: %dx%d\n", game.width, game.height);
 
     i = 0;
@@ -81,6 +185,9 @@ int	main(int argc, char **argv)
         printf("%s\n", game.map[i]);
         i++;
     }
+
+    // Registrar el callback de teclado
+    mlx_key_hook(game.mlx, &key_handler, &game);
 
     draw_map(&game);
 
